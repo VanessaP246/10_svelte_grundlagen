@@ -28,7 +28,7 @@
 }
 
 </script>
-
+asdsa
 <div class="svg-container">
 	<svg class="svg-canvas" viewBox="0 0 1000 1000">
 	{#each Array(moduleCountY) as _, yi}
