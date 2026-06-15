@@ -8,6 +8,7 @@
 	import Pattern1 from '$lib/components/Pattern2.svelte'
 	import Pattern2 from '$lib/components/Pattern3.svelte'
 	import Pattern3 from '$lib/components/Pattern4.svelte'
+	import Pattern4 from '$lib/components/Pattern5.svelte'
 
 	import Footer from '$lib/components/Footer.svelte'
 	import chroma from 'chroma-js';
@@ -27,12 +28,17 @@
 		{
 			name: 'Pattern 3',
 			component: Pattern3,
-			description: 'Beides kombiniert'
+			description: 'Farb-Experimente'
+		},
+		{
+			name: 'Pattern 4',
+			component: Pattern4,
+			description: 'Trapeze'
 		}
 	];
 
   // Reative State Variable mit dem Index fürs Pattern im Array patterns
-	let selectedPattern = $state(2);
+	let selectedPattern = $state(0);
 
   // Property component vom selektierten Pattern, in die reaktivere Variable SelectedPattern schreiben.
   // SelectedPattern Komponente wird unten mit <SelectedPattern /> geladen. Und gewechselt, wenn geklickt wird.

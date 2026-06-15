@@ -57,7 +57,7 @@
 </div>
 
 <div class="sidebar-right">
-	<Slider bind:value={offset1x} label="Rotation der Mittelachse" min={-60} max={60} />
-	<Slider bind:value={offset2x} label="Verschiebung der Mittelachse" min={-60} max={60} />
-	<Slider bind:value={midpointDistance} label="Verschiebung der Mittelpunkte" min={-28} max={28} />
+	<!-- <Slider bind:value={offset1x} label="Rotation der Mittelachse" min={-60} max={60} />
+	<Slider bind:value={offset2x} label="Verschiebung der Mittelachse" min={-60} max={60} /> -->
+	<Slider bind:value={midpointDistance} label="Verschiebung der Mittelpunkte" min={-43} max={43} snapValues={[0]} />
 </div>

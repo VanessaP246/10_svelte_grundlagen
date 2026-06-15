@@ -6,8 +6,7 @@
     let offset2x = $state(0);
 
     let hueMin = $state(0);
-    // Match the RangeSlider max (270) to avoid initial thumb positions outside the track
-    let hueMax = $state(270);
+    let hueMax = $state(360);
 
     // Saturation & Lightness sind gruppenübergreifend einheitlich –
     // das war im Hex-Code nicht erkennbar
