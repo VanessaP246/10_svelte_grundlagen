@@ -1,10 +1,18 @@
 <script>
 	import Slider from '$lib/components/Slider.svelte'
+	import Toggle from '$lib/components/Toggle.svelte'
 	import chroma from 'chroma-js';
 
 	let midpointDistance = $state(0);
 	let offset1x = $state(0);
 	let offset2x = $state(0);
+	let linkValues = $state(true);
+
+	$effect(() => {
+		if (linkValues) {
+			offset2x = offset1x >= 0 ? 60 - offset1x : -60 - offset1x;
+		}
+	});
 
 	const triangleWidth = 60;
 	const triangleHeight = Math.tan((30 * Math.PI) / 180) * triangleWidth;
@@ -85,4 +93,5 @@
 <div class="sidebar-right">
 	<Slider bind:value={offset1x} label="Rotation der Mittelachse" min={-60} max={60} snapValues={[0]} />
 <Slider bind:value={offset2x} label="Verschiebung der Mittelachse" min={-60} max={60} snapValues={[0]} />
+<Toggle bind:value={linkValues} label="Beide Werte koppeln" />
 </div>

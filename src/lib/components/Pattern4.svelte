@@ -1,6 +1,7 @@
 <script>
     import RangeSlider from '$lib/components/RangeSlider.svelte';
     import Slider from '$lib/components/Slider.svelte';
+	import chroma from 'chroma-js';
 
     let offset1x = $state(0);
     let offset2x = $state(0);
@@ -16,17 +17,21 @@
     const L_dark   = 35;
 
     // t = 0 / 0.5 / 1  →  gleichmäßig über den gewählten Hue-Bereich verteilt
-    function hsl(t) {
+    function hsl(t, l) {
         const h = Math.round(hueMin + t * (hueMax - hueMin));
-        return {
-            light: `hsl(${h}, ${S}%, ${L_light}%)`,
-            dark:  `hsl(${h}, ${S}%, ${L_dark}%)`,
-        };
+        // return {
+        //     light: `hsl(${h}, ${S}%, ${L_light}%)`,
+        //     dark:  `hsl(${h}, ${S}%, ${L_dark}%)`,
+        // };
+		return {
+			light: chroma.oklch(l+0.05, 0.15, h).hex(),
+			dark:  chroma.oklch(l-0.05, 0.15, h).hex(),
+		};
     }
 
-    let c0 = $derived(hsl(0));    // 0°-Gruppe
-    let c1 = $derived(hsl(0.5)); // 120°-Gruppe
-    let c2 = $derived(hsl(1));   // 240°-Gruppe
+    let c0 = $derived(hsl(0, 0.6));    // 0°-Gruppe
+    let c1 = $derived(hsl(0.5, 0.3)); // 120°-Gruppe
+    let c2 = $derived(hsl(1, 0.9));   // 240°-Gruppe
 
     const triangleWidth  = 60;
     const triangleHeight = Math.tan((30 * Math.PI) / 180) * triangleWidth;
