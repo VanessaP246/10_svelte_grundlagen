@@ -16,7 +16,12 @@
 	// Array mit den Patterns als Objekte, mit 3 Properties: name, component, description
 	let patterns = [
 		{
-			name: 'Pattern 1',
+			name: 'Farben',
+			component: Pattern3,
+			description: 'Farb-Experimente'
+		},
+		{
+			name: 'Grundaufbau',
 			component: Pattern1,
 			description: 'Verschieben & Rotieren der Mittelachse'
 		},
@@ -25,11 +30,7 @@
 			component: Pattern2,
 			description: 'Verschieben der Mittelpunkte'
 		},
-		{
-			name: 'Pattern 3',
-			component: Pattern3,
-			description: 'Farb-Experimente'
-		},
+	
 		{
 			name: 'Pattern 4',
 			component: Pattern4,

@@ -6,13 +6,25 @@
 	let midpointDistance = $state(0);
 	let offset1x = $state(0);
 	let offset2x = $state(0);
-	let linkValues = $state(true);
+	let linkValues = $state(false);
+
+	// $effect(() => {
+	// 	if (linkValues) {
+	// 		offset2x = offset1x >= 0 ? 60 - offset1x : -60 - offset1x;
+	// 	}
+	// });
 
 	$effect(() => {
-		if (linkValues) {
-			offset2x = offset1x >= 0 ? 60 - offset1x : -60 - offset1x;
-		}
-	});
+    if (linkValues) {
+        offset2x = Math.abs(offset1x) - 60;
+    }
+});
+
+// $effect(() => {
+//     if (linkValues) {
+//         offset2x = 60 - Math.abs(offset1x);
+//     }
+// });
 
 	const triangleWidth = 60;
 	const triangleHeight = Math.tan((30 * Math.PI) / 180) * triangleWidth;
