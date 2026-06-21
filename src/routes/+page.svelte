@@ -5,10 +5,11 @@
 	
 
 	// Pattern-Navigation
-	import Pattern1 from '$lib/components/Pattern2.svelte'
-	import Pattern2 from '$lib/components/Pattern3.svelte'
-	import Pattern3 from '$lib/components/Pattern4.svelte'
+	import Pattern1 from '$lib/components/Pattern_Basics.svelte'
+	import Pattern2 from '$lib/components/Pattern_Mittelpunkte.svelte'
+	import Pattern3 from '$lib/components/Pattern_Farben.svelte'
 	import Pattern4 from '$lib/components/Pattern5.svelte'
+	import Pattern5 from '$lib/components/Pattern_Loop.svelte'
 
 	import Footer from '$lib/components/Footer.svelte'
 	import chroma from 'chroma-js';
@@ -26,7 +27,7 @@
 			description: 'Verschieben & Rotieren der Mittelachse'
 		},
 		{
-			name: 'Pattern 2',
+			name: 'Mittelpunkte',
 			component: Pattern2,
 			description: 'Verschieben der Mittelpunkte'
 		},
@@ -35,6 +36,11 @@
 			name: 'Pattern 4',
 			component: Pattern4,
 			description: 'Trapeze'
+		},
+		{
+			name: 'Loop',
+			component: Pattern5,
+			description: 'x'
 		}
 	];
 
