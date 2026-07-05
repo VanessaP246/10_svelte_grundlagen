@@ -1,3 +1,3 @@
 <header>
-	<h1>Aufgabe 1 <span class="title">– Pattern mit Svelte</span></h1>
+	<h1>Parkettierung <span class="title">– Pattern mit Svelte</span></h1>
 </header>

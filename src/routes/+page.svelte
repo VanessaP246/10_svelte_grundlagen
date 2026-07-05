@@ -6,7 +6,9 @@
 	// Pattern-Navigation
 	import Pattern1 from '$lib/components/Pattern_Basics.svelte';
 	import Pattern2 from '$lib/components/Pattern_Mittelpunkte.svelte';
-	import Pattern3 from '$lib/components/Pattern_Farben.svelte';
+	import Pattern3 from '$lib/components/Pattern_Farben_1.svelte';
+	import Pattern3b from '$lib/components/Pattern_Farben_2.svelte';
+	import Pattern3c from '$lib/components/Pattern_Farben_3.svelte';
 	import Pattern4 from '$lib/components/Pattern5.svelte';
 	import Pattern4b from '$lib/components/Pattern_Ausrichtung.svelte';
 	import Pattern5 from '$lib/components/Pattern_Loop.svelte';
@@ -22,8 +24,18 @@
 			description: 'Verschieben & Rotieren der Mittelachse'
 		},
 		{
-			name: 'Farben',
+			name: 'Farben 1',
 			component: Pattern3,
+			description: 'Farb-Experimente'
+		},
+		{
+			name: 'Farben 2',
+			component: Pattern3b,
+			description: 'Farb-Experimente'
+		},
+		{
+			name: 'Farben 3',
+			component: Pattern3c,
 			description: 'Farb-Experimente'
 		},
 		{

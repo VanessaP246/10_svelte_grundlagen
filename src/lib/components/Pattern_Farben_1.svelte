@@ -11,12 +11,13 @@
     const colorModes = [1, 3, 6];
     let colorModeIndex = $state(2);
     let colorMode = $derived(colorModes[colorModeIndex]);
+    let lightnessDiff = $state(0.05);
 
     function hsl(t, l) {
         const h = Math.round(hueMin + t * (hueMax - hueMin));
         return {
-            light: chroma.oklch(l + 0.05, 0.15, h).hex(),
-            dark:  chroma.oklch(l - 0.05, 0.15, h).hex(),
+            light: chroma.oklch(l + lightnessDiff, 0.15, h).hex(),
+            dark:  chroma.oklch(l - lightnessDiff, 0.15, h).hex(),
         };
     }
 
@@ -124,35 +125,26 @@
 </div>
 
 <div class="sidebar-right">
-    <!-- <div class="color-mode-buttons">
-        {#each [1, 3, 6] as m}
-            <button class:active={colorMode === m} onclick={() => colorMode = m}>{m}</button>
-        {/each}
-    </div> -->
-    <Slider
-        bind:value={colorModeIndex}
-        label="Modul-Unterteilungen"
-        min={0}
-        max={2}
-        step={1}
-        snapValues={[0, 1, 2]}
-        snapWidth={999}
-        thumbSize="33.33%"
-    />
-    
-    <!-- Erste Trennlinie -->
-    <hr class="divider" />
-
     <RangeSlider
         bind:value1={hueMin}
         bind:value2={hueMax}
-        label="Farbbereich (Hue 0–270°)"
+        label="Farbbereich"
         min={0}
         max={270}
         step={1}
     />
     
-    <!-- Zweite Trennlinie -->
+    <hr class="divider" />
+
+    <Slider
+    bind:value={lightnessDiff}
+    label="Helligkeitsunterschied"
+    min={0.02}
+    max={0.08}
+    step={0.01}
+    snapValues={[0.05]}
+/>
+
     <hr class="divider" />
 
     <Slider bind:value={offset1x} label="Rotation der Mittelachse"     min={-60} max={60} snapValues={[0]} />
@@ -160,6 +152,7 @@
 </div>
 
 <style>
+
     /* Styling für die feinen Trennlinien */
     .divider {
         border: none;
