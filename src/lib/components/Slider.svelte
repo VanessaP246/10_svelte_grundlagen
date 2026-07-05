@@ -7,7 +7,8 @@
 		value = $bindable(50),
 		label = $bindable('Slider'),
 		snapValues = [],
-		snapWidth = 16
+		snapWidth = 16,
+		thumbSize = '45px'
 	} = $props();
 
 	// references to DOM elements
@@ -179,7 +180,7 @@
 			aria-valuemax={max}
 			aria-valuenow={value}
 			aria-label={label + ' slider thumb'}
-			style="left: {position}px;"
+			style="left: {position}px; width: {thumbSize};"
 		>
 			{prettifyValue(value)}
 		</div>
@@ -209,7 +210,6 @@
 		position: relative;
 		top: 0px;
 		left: 1px;
-		width: 45px;
 		height: 20px;
 		background: #666;
 		border: 1px solid #777;

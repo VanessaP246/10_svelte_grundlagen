@@ -12,8 +12,8 @@
   const tw = triangleWidth;
   const th = triangleHeight;
 
-  // t1: 0→1 während t: 0→0.5 (erste Phase)
-  // t2: 0→1 während t: 0.5→1 (zweite Phase)
+  // t1: 0→1 während t: 0→0.5  (erste Phase)
+  // t2: 0→1 während t: 0.5→1  (zweite Phase)
   let t1 = $derived(Math.min(t * 2, 1));
   let t2 = $derived(Math.max((t - 0.5) * 2, 0));
 
@@ -32,19 +32,23 @@
       [0,  lerp(0,  2*th,  t1) ],
   ]);
 
-  // Phase 2: Raute → horizontale Parallelogramme
+    // Phase 2: Raute → neue asymmetrische Formen
+  // p1_b: Punkt rechts unten (Index 0) bleibt starr auf [2*tw, 2*th] stehen.
+  // Punkt rechts oben (Index 3) wandert linear zum Mittelpunkt von P2[1] und P2[2] (also [tw, 2*th])
   let p1_b = $derived([
-      [2*tw,               2*th             ],
-      [0,                  4*th             ],
-      [0,                  2*th             ],
-      [lerp(tw, 2*tw, t2), lerp(th,  0, t2)],
-  ]);
+    [2*tw,               2*th             ],
+    [0,                  4*th             ],
+    [0,                  2*th             ],
+    [lerp(tw, 2*tw, t2), lerp(th, 0, t2)  ], // Bewegt sich schräg nach rechts oben zu [2*tw, 0]
+]);
+  // p2_b wächst zur oberen Hälfte (der Punkt rechts unten [2*tw, 2*th] bleibt fest)
   let p2_b = $derived([
       [2*tw,               -2*th                    ],
-      [2*tw,               2*th                     ], // Bleibt fest
+      [2*tw,               2*th                     ], 
       [lerp(tw, 0, t2),    lerp(3*th, 2*th,   t2)  ],
       [lerp(tw, 0, t2),    lerp(-th,   0,     t2)  ],
   ]);
+  // p3_b schrumpft von der Raute zur Linie
   let p3_b = $derived([
       [0,                  0                        ],
       [lerp(tw, 0, t2),    lerp(-th,   0,     t2)  ],
@@ -64,34 +68,22 @@
       return yi % 2 === 1 ? triangleWidth * 2 : 0;
   }
 
-  // --- FARBSKALEN DEFINIEREN ---
+  // --- STATISCHE FARBEN ---
 
-  // Gruppe 1: Rechts unten (0 Grad)
-  const light1 = '#DC6563';
-  const dark1 = '#B84546';
-  const mid1 = chroma.scale([light1, dark1]).mode('oklch')(0.5).hex();
+  // 1. Gruppe rechts unten (Ausrichtung nach rechts)
+  const color_ru_p1 = '#DC6563'; // Hell (Mitte)
+  const color_ru_p2 = '#B84546'; // Dunkel (Außen)
+  const color_ru_p3 = chroma.mix('#B84546', '#DC6563', 0.5, 'oklch').hex(); // Mittelwert
 
-  const scale1_p1 = chroma.scale([light1, dark1]).mode('oklch'); // Hell -> Dunkel
-  const scale1_p2 = chroma.scale([dark1, light1]).mode('oklch'); // Dunkel -> Hell
-  const scale1_p3 = chroma.scale([mid1, mid1]).mode('oklch');   // Konstant Mittelwert
+  // 2. Gruppe links unten (120 Grad rotiert)
+  const color_lu_p1 = '#701101'; // Hell (Mitte)
+  const color_lu_p2 = '#500000'; // Dunkel (Außen)
+  const color_lu_p3 = chroma.mix('#500000', '#701101', 0.5, 'oklch').hex(); // Mittelwert
 
-  // Gruppe 2: Links unten (120 Grad)
-  const light2 = '#701101';
-  const dark2 = '#500000';
-  const mid2 = chroma.scale([light2, dark2]).mode('oklch')(0.5).hex();
-
-  const scale2_p1 = chroma.scale([light2, dark2]).mode('oklch'); // Hell -> Dunkel
-  const scale2_p2 = chroma.scale([dark2, light2]).mode('oklch'); // Dunkel -> Hell
-  const scale2_p3 = chroma.scale([mid2, mid2]).mode('oklch');   // Konstant Mittelwert
-
-  // Gruppe 3: Oben (240 Grad)
-  const light3 = '#FFE56D';
-  const dark3 = '#FCC447';
-  const mid3 = chroma.scale([light3, dark3]).mode('oklch')(0.5).hex();
-
-  const scale3_p1 = chroma.scale([light3, dark3]).mode('oklch'); // Hell -> Dunkel
-  const scale3_p2 = chroma.scale([dark3, light3]).mode('oklch'); // Dunkel -> Hell
-  const scale3_p3 = chroma.scale([mid3, mid3]).mode('oklch');   // Konstant Mittelwert
+  // 3. Gruppe oben (240 Grad rotiert)
+  const color_o_p1 = '#FFE56D';  // Hell (Mitte)
+  const color_o_p2 = '#FCC447';  // Dunkel (Außen)
+  const color_o_p3 = chroma.mix('#FCC447', '#FFE56D', 0.5, 'oklch').hex();  // Mittelwert
 </script>
 
 <div class="svg-container">
@@ -100,33 +92,32 @@
       {#each Array(moduleCountX) as _, xi}
         <g transform="translate({xi * triangleWidth * 4 + getOffset(xi, yi)},{yi * triangleHeight * 6})">
           
-          <!-- Gruppe 1: rechts unten (0 Grad) -->
+          <!-- Gruppe rechts unten -->
           <g>
-            <polygon points={pts(p2)} fill={scale1_p2(t)} stroke-width="0"/>
-            <polygon points={pts(p1)} fill={scale1_p1(t)} stroke-width="0"/>
-            <polygon points={pts(p3)} fill={scale1_p3(t)} stroke-width="0"/>
+            <polygon points={pts(p2)} fill={color_ru_p2} stroke-width="0"/>
+            <polygon points={pts(p1)} fill={color_ru_p1} stroke-width="0"/>
+            <polygon points={pts(p3)} fill={color_ru_p3} stroke-width="0"/>
           </g>
           
-          <!-- Gruppe 2: links unten (120 Grad) -->
+          <!-- Gruppe links unten -->
           <g transform="rotate(120, 0, 0)">
-            <polygon points={pts(p2)} fill={scale2_p2(t)} stroke-width="0"/>
-            <polygon points={pts(p1)} fill={scale2_p1(t)} stroke-width="0"/>
-            <polygon points={pts(p3)} fill={scale2_p3(t)} stroke-width="0"/>
+            <polygon points={pts(p2)} fill={color_lu_p2} stroke-width="0"/>
+            <polygon points={pts(p1)} fill={color_lu_p1} stroke-width="0"/>
+            <polygon points={pts(p3)} fill={color_lu_p3} stroke-width="0"/>
           </g>
           
-          <!-- Gruppe 3: oben (240 Grad) -->
+          <!-- Gruppe oben -->
           <g transform="rotate(240, 0, 0)">
-            <polygon points={pts(p2)} fill={scale3_p2(t)} stroke-width="0"/>
-            <polygon points={pts(p1)} fill={scale3_p1(t)} stroke-width="0"/>
-            <polygon points={pts(p3)} fill={scale3_p3(t)} stroke-width="0"/>
+            <polygon points={pts(p2)} fill={color_o_p2} stroke-width="0"/>
+            <polygon points={pts(p1)} fill={color_o_p1} stroke-width="0"/>
+            <polygon points={pts(p3)} fill={color_o_p3} stroke-width="0"/>
           </g>
-
+          
         </g>
       {/each}
     {/each}
   </svg>
 </div>
-
 <div class="sidebar-right">
   <Slider bind:value={t} label="Solid → Hollow" min={0} max={1} step={0.01} snapValues={[0.5]}/>
 </div>

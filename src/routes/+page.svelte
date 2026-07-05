@@ -8,7 +8,7 @@
 	import Pattern2 from '$lib/components/Pattern_Mittelpunkte.svelte';
 	import Pattern3 from '$lib/components/Pattern_Farben.svelte';
 	import Pattern4 from '$lib/components/Pattern5.svelte';
-	import Pattern4b from '$lib/components/Pattern5b.svelte';
+	import Pattern4b from '$lib/components/Pattern_Ausrichtung.svelte';
 	import Pattern5 from '$lib/components/Pattern_Loop.svelte';
 
 	import Footer from '$lib/components/Footer.svelte';
@@ -17,14 +17,14 @@
 	// Array mit den Patterns als Objekte, mit 3 Properties: name, component, description
 	let patterns = [
 		{
-			name: 'Farben',
-			component: Pattern3,
-			description: 'Farb-Experimente'
-		},
-		{
 			name: 'Grundaufbau',
 			component: Pattern1,
 			description: 'Verschieben & Rotieren der Mittelachse'
+		},
+		{
+			name: 'Farben',
+			component: Pattern3,
+			description: 'Farb-Experimente'
 		},
 		{
 			name: 'Mittelpunkte',
@@ -32,21 +32,21 @@
 			description: 'Verschieben der Mittelpunkte'
 		},
 
+		// {
+		// 	name: 'Pattern 4',
+		// 	component: Pattern4,
+		// 	description: 'Trapeze'
+		// },
 		{
-			name: 'Pattern 4',
-			component: Pattern4,
-			description: 'Trapeze'
-		},
-		{
-			name: 'Pattern 4b',
+			name: 'Ausrichtung',
 			component: Pattern4b,
 			description: 'Trapeze 2'
 		},
-		{
-			name: 'Loop',
-			component: Pattern5,
-			description: 'x'
-		}
+		// {
+		// 	name: 'Loop',
+		// 	component: Pattern5,
+		// 	description: 'x'
+		// }
 	];
 
 	// Reative State Variable mit dem Index fürs Pattern im Array patterns
