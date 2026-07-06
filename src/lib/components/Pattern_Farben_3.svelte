@@ -8,23 +8,28 @@
     let hue0 = $state(0);
     let hue1 = $state(135);
     let hue2 = $state(270);
-    let saturation = $state(0.15);
+
+    let lightness0 = $state(0.6);
+    let lightness1 = $state(0.3);
+    let lightness2 = $state(0.9);
+
+    let saturation    = $state(0.15);
+    let lightnessDiff = $state(0.05);
 
     const colorModes = [1, 3, 6];
     let colorModeIndex = $state(2);
     let colorMode = $derived(colorModes[colorModeIndex]);
-     let lightnessDiff = $state(0.05);
 
-function makeColor(h, l) {
-    return {
-        light: chroma.oklch(l + lightnessDiff, saturation, h).hex(),
-        dark:  chroma.oklch(l - lightnessDiff, saturation, h).hex(),
-    };
-}
+    function makeColor(h, l) {
+        return {
+            light: chroma.oklch(l + lightnessDiff, saturation, h).hex(),
+            dark:  chroma.oklch(l - lightnessDiff, saturation, h).hex(),
+        };
+    }
 
-    let c0 = $derived(makeColor(hue0, 0.6));
-    let c1 = $derived(makeColor(hue1, 0.3));
-    let c2 = $derived(makeColor(hue2, 0.9));
+    let c0 = $derived(makeColor(hue0, lightness0));
+    let c1 = $derived(makeColor(hue1, lightness1));
+    let c2 = $derived(makeColor(hue2, lightness2));
 
     function getColors(xi, yi) {
         if (colorMode === 6) {
@@ -126,20 +131,38 @@ function makeColor(h, l) {
 </div>
 
 <div class="sidebar-right">
-    <Slider bind:value={hue0} label="Farbton 1" min={0} max={360} step={1} snapValues={[0, 60, 120, 180, 240, 300, 360]} />
-    <Slider bind:value={hue1} label="Farbton 2" min={0} max={360} step={1} snapValues={[0, 60, 120, 180, 240, 300, 360]} />
-    <Slider bind:value={hue2} label="Farbton 3" min={0} max={360} step={1} snapValues={[0, 60, 120, 180, 240, 300, 360]} />
+
+    <!-- Gruppe 1 -->
+    <div class="group">
+        <Slider bind:value={hue1}       label="Farbton 1"    min={0}   max={360}  step={1}    snapValues={[0, 60, 120, 180, 240, 300, 360]} />
+        <Slider bind:value={lightness1} label="Helligkeit 1" min={0.1} max={0.95} step={0.01} snapValues={[0.3, 0.6, 0.9]} />
+    </div>
+
+    <!-- Gruppe 2 -->
+    <div class="group">
+        <Slider bind:value={hue0}       label="Farbton 2"    min={0}   max={360}  step={1}    snapValues={[0, 60, 120, 180, 240, 300, 360]} />
+        <Slider bind:value={lightness0} label="Helligkeit 2" min={0.1} max={0.95} step={0.01} snapValues={[0.3, 0.6, 0.9]} />
+    </div>
+
+    <!-- Gruppe 3 -->
+    <div class="group">
+        <Slider bind:value={hue2}       label="Farbton 3"    min={0}   max={360}  step={1}    snapValues={[0, 60, 120, 180, 240, 300, 360]} />
+        <Slider bind:value={lightness2} label="Helligkeit 3" min={0.1} max={0.95} step={0.01} snapValues={[0.3, 0.6, 0.9]} />
+    </div>
 
     <hr class="divider" />
 
-    <Slider bind:value={saturation} label="Sättigung" min={0} max={0.24} step={0.01} snapValues={[0.15]} />
-
-    <hr class="divider" />
-
+    <!-- Global -->
+    <Slider bind:value={saturation}    label="Sättigung"              min={0}    max={0.24} step={0.01} snapValues={[0.15]} />
     <Slider bind:value={lightnessDiff} label="Helligkeitsunterschied" min={0.02} max={0.08} step={0.01} snapValues={[0.05]} />
+
 </div>
 
 <style>
+.group {
+    margin-bottom: 1.4rem;
+}
+
 .divider {
     border: none;
     border-top: 1px solid currentColor;

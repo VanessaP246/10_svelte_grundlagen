@@ -31,12 +31,12 @@
 		{
 			name: 'Farben 2',
 			component: Pattern3b,
-			description: 'Farb-Experimente'
+			description: 'Farb-Aufteilung'
 		},
 		{
 			name: 'Farben 3',
 			component: Pattern3c,
-			description: 'Farb-Experimente'
+			description: 'Erweitert: Farbton, Sättigung & Helligkeit'
 		},
 		{
 			name: 'Mittelpunkte',
@@ -52,7 +52,7 @@
 		{
 			name: 'Ausrichtung',
 			component: Pattern4b,
-			description: 'Trapeze 2'
+			description: 'Ausrichtung der Parallelogramme'
 		},
 		// {
 		// 	name: 'Loop',

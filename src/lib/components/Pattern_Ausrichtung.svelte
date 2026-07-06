@@ -1,5 +1,7 @@
 <script>
   import Slider from '$lib/components/Slider.svelte';
+  import RangeSlider from '$lib/components/RangeSlider.svelte';
+  import Toggle from '$lib/components/Toggle.svelte';
   import chroma from 'chroma-js';
 
   const triangleWidth = 60;
@@ -12,12 +14,9 @@
   const tw = triangleWidth;
   const th = triangleHeight;
 
-  // t1: 0→1 während t: 0→0.5  (erste Phase)
-  // t2: 0→1 während t: 0.5→1  (zweite Phase)
   let t1 = $derived(Math.min(t * 2, 1));
   let t2 = $derived(Math.max((t - 0.5) * 2, 0));
 
-  // Phase 1: vertikale Parallelogramme → Raute
   let p1_a = $derived([
       [lerp(tw,  2*tw,  t1), lerp(3*th, 2*th, t1)],
       [0,                    4*th                 ],
@@ -32,23 +31,18 @@
       [0,  lerp(0,  2*th,  t1) ],
   ]);
 
-    // Phase 2: Raute → neue asymmetrische Formen
-  // p1_b: Punkt rechts unten (Index 0) bleibt starr auf [2*tw, 2*th] stehen.
-  // Punkt rechts oben (Index 3) wandert linear zum Mittelpunkt von P2[1] und P2[2] (also [tw, 2*th])
   let p1_b = $derived([
     [2*tw,               2*th             ],
     [0,                  4*th             ],
     [0,                  2*th             ],
-    [lerp(tw, 2*tw, t2), lerp(th, 0, t2)  ], // Bewegt sich schräg nach rechts oben zu [2*tw, 0]
-]);
-  // p2_b wächst zur oberen Hälfte (der Punkt rechts unten [2*tw, 2*th] bleibt fest)
+    [lerp(tw, 2*tw, t2), lerp(th, 0, t2)  ], 
+  ]);
   let p2_b = $derived([
       [2*tw,               -2*th                    ],
       [2*tw,               2*th                     ], 
       [lerp(tw, 0, t2),    lerp(3*th, 2*th,   t2)  ],
       [lerp(tw, 0, t2),    lerp(-th,   0,     t2)  ],
   ]);
-  // p3_b schrumpft von der Raute zur Linie
   let p3_b = $derived([
       [0,                  0                        ],
       [lerp(tw, 0, t2),    lerp(-th,   0,     t2)  ],
@@ -56,7 +50,6 @@
       [0,                  2*th                     ],
   ]);
 
-  // Aktive Polygone je nach Phase
   let p1 = $derived(t <= 0.5 ? p1_a : p1_b);
   let p2 = $derived(t <= 0.5 ? p2_static : p2_b);
   let p3 = $derived(t <= 0.5 ? p3_a : p3_b);
@@ -68,22 +61,61 @@
       return yi % 2 === 1 ? triangleWidth * 2 : 0;
   }
 
-  // --- STATISCHE FARBEN ---
+  // --- HILFSFUNKTION FÜR KOMPLEMENTÄRFARBEN ---
+  function getComplement(hex) {
+    const [L, C, H] = chroma(hex).oklch();
+    return chroma.oklch(L, C, (H + 180) % 360).hex();
+  }
 
-  // 1. Gruppe rechts unten (Ausrichtung nach rechts)
-  const color_ru_p1 = '#DC6563'; // Hell (Mitte)
-  const color_ru_p2 = '#B84546'; // Dunkel (Außen)
-  const color_ru_p3 = chroma.mix('#B84546', '#DC6563', 0.5, 'oklch').hex(); // Mittelwert
+  // --- ERWEITERTE OPTIONEN (Toggle) ---
+  let advanced = $state(false);
 
-  // 2. Gruppe links unten (120 Grad rotiert)
-  const color_lu_p1 = '#701101'; // Hell (Mitte)
-  const color_lu_p2 = '#500000'; // Dunkel (Außen)
-  const color_lu_p3 = chroma.mix('#500000', '#701101', 0.5, 'oklch').hex(); // Mittelwert
+  // --- FARBBEREICH (Hue), nur relevant wenn advanced === true ---
+  let hueMin = $state(0);
+  let hueMax = $state(270);
 
-  // 3. Gruppe oben (240 Grad rotiert)
-  const color_o_p1 = '#FFE56D';  // Hell (Mitte)
-  const color_o_p2 = '#FCC447';  // Dunkel (Außen)
-  const color_o_p3 = chroma.mix('#FCC447', '#FFE56D', 0.5, 'oklch').hex();  // Mittelwert
+  function hueAt(pos) {
+    return hueMin + pos * (hueMax - hueMin);
+  }
+
+  // --- URSPRÜNGLICHE FESTE FARBEN (advanced === false) ---
+  const orig_ru_p1 = '#DC6563'; // Hell (Mitte)
+  const orig_ru_p2 = '#B84546'; // Dunkel (Außen)
+  const orig_ru_p3 = getComplement(chroma.mix(orig_ru_p2, orig_ru_p1, 0.5, 'oklch').hex());
+
+  const orig_lu_p1 = '#701101'; // Hell (Mitte)
+  const orig_lu_p2 = '#500000'; // Dunkel (Außen)
+  const orig_lu_p3 = getComplement(orig_lu_p1);
+
+  const orig_o_p1 = '#FFE56D';  // Hell (Mitte)
+  const orig_o_p2 = '#FCC447';  // Dunkel (Außen)
+  const orig_o_p3 = getComplement(orig_o_p2);
+
+  // --- DYNAMISCHE FARBEN (advanced === true), aus Farbbereich-Slider ---
+  let dyn_ru_p1 = $derived(chroma.oklch(0.65, 0.15, hueAt(0)).hex());
+  let dyn_ru_p2 = $derived(chroma.oklch(0.5,  0.15, hueAt(0)).hex());
+  let dyn_ru_p3 = $derived(getComplement(chroma.mix(dyn_ru_p2, dyn_ru_p1, 0.5, 'oklch').hex()));
+
+  let dyn_lu_p1 = $derived(chroma.oklch(0.35, 0.15, hueAt(0.5)).hex());
+  let dyn_lu_p2 = $derived(chroma.oklch(0.2,  0.15, hueAt(0.5)).hex());
+  let dyn_lu_p3 = $derived(getComplement(chroma.mix(dyn_lu_p2, dyn_lu_p1, 0.5, 'oklch').hex()));
+
+  let dyn_o_p1 = $derived(chroma.oklch(0.9,  0.15, hueAt(1)).hex());
+  let dyn_o_p2 = $derived(chroma.oklch(0.78, 0.15, hueAt(1)).hex());
+  let dyn_o_p3 = $derived(getComplement(chroma.mix(dyn_o_p2, dyn_o_p1, 0.5, 'oklch').hex()));
+
+  // --- AKTIVE FARBEN je nach Toggle-Status ---
+  let color_ru_p1 = $derived(advanced ? dyn_ru_p1 : orig_ru_p1);
+  let color_ru_p2 = $derived(advanced ? dyn_ru_p2 : orig_ru_p2);
+  let color_ru_p3 = $derived(advanced ? dyn_ru_p3 : orig_ru_p3);
+
+  let color_lu_p1 = $derived(advanced ? dyn_lu_p1 : orig_lu_p1);
+  let color_lu_p2 = $derived(advanced ? dyn_lu_p2 : orig_lu_p2);
+  let color_lu_p3 = $derived(advanced ? dyn_lu_p3 : orig_lu_p3);
+
+  let color_o_p1 = $derived(advanced ? dyn_o_p1 : orig_o_p1);
+  let color_o_p2 = $derived(advanced ? dyn_o_p2 : orig_o_p2);
+  let color_o_p3 = $derived(advanced ? dyn_o_p3 : orig_o_p3);
 </script>
 
 <div class="svg-container">
@@ -118,6 +150,31 @@
     {/each}
   </svg>
 </div>
+
 <div class="sidebar-right">
   <Slider bind:value={t} label="Ausrichtung der Parallelogramme" min={0} max={1} step={0.01} snapValues={[0.5]}/>
+
+  <hr class="divider" />
+
+  <Toggle bind:value={advanced} label="Erweitert: Farbvarianten" />
+
+  {#if advanced}
+    <RangeSlider
+      bind:value1={hueMin}
+      bind:value2={hueMax}
+      label="Farbbereich"
+      min={0}
+      max={270}
+      step={1}
+    />
+  {/if}
 </div>
+
+<style>
+  .divider {
+    border: none;
+    border-top: 1px solid currentColor;
+    opacity: 0.15;
+    margin: 1.2rem 0;
+  }
+</style>
